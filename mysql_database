@@ -1,0 +1,106 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`contract`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`contract` (
+  `idcontract` INT NOT NULL AUTO_INCREMENT,
+  `start` VARCHAR(45) NOT NULL,
+  `daily` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idcontract`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`child`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`child` (
+  `idchild` INT NOT NULL AUTO_INCREMENT,
+  `first` VARCHAR(45) NOT NULL,
+  `last` VARCHAR(45) NOT NULL,
+  `id` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NULL,
+  `postcode` INT NULL,
+  `city` VARCHAR(45) NULL,
+  `county` VARCHAR(45) NULL,
+  `info` TEXT(255) NULL,
+  `contract_idcontract` INT NOT NULL,
+  PRIMARY KEY (`idchild`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+  INDEX `fk_child_contract1_idx` (`contract_idcontract` ASC),
+  CONSTRAINT `fk_child_contract1`
+    FOREIGN KEY (`contract_idcontract`)
+    REFERENCES `mydb`.`contract` (`idcontract`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`adult`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`adult` (
+  `idadult` INT NOT NULL AUTO_INCREMENT,
+  `first` VARCHAR(45) NOT NULL,
+  `last` VARCHAR(45) NOT NULL,
+  `id` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NULL,
+  `phone` VARCHAR(45) NULL,
+  `profession` VARCHAR(45) NULL,
+  `job` VARCHAR(45) NULL,
+  PRIMARY KEY (`idadult`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`users` (
+  `idusers` INT NOT NULL AUTO_INCREMENT,
+  `first` VARCHAR(45) NOT NULL,
+  `last` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `uid` VARCHAR(45) NOT NULL,
+  `pwd` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idusers`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`child_adult`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`child_adult` (
+  `child_idchild` INT NOT NULL,
+  `adult_idadult` INT NOT NULL,
+  PRIMARY KEY (`child_idchild`, `adult_idadult`),
+  INDEX `fk_child_has_adult_adult1_idx` (`adult_idadult` ASC),
+  INDEX `fk_child_has_adult_child_idx` (`child_idchild` ASC),
+  CONSTRAINT `fk_child_has_adult_child`
+    FOREIGN KEY (`child_idchild`)
+    REFERENCES `mydb`.`child` (`idchild`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_child_has_adult_adult1`
+    FOREIGN KEY (`adult_idadult`)
+    REFERENCES `mydb`.`adult` (`idadult`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
